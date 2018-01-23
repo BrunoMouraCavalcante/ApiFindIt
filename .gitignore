@@ -17,6 +17,8 @@
 findit.iml
 ./idea
 ./idea/*
+teste.txt
+library.xml
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/

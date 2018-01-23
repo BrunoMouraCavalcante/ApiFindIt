@@ -1,4 +1,4 @@
-package com.findit.dota2api;
+package com.findit.dota2.api;
 
 import com.google.gson.Gson;
 import okhttp3.ResponseBody;
