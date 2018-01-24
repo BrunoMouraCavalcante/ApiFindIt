@@ -20,7 +20,7 @@ public class App {
                     Integer.valueOf(System.getenv("PORT")) : 8080;
 
             URI baseUri = UriBuilder.fromUri("http://localhost/").port(port).build();
-            ResourceConfig resourceConfig = new ResourceConfig().packages("com.findit");
+            ResourceConfig resourceConfig = new ResourceConfig().packages("com.findit.chamada.api");
             NettyHttpContainerProvider.createServer(baseUri, resourceConfig, false);
             System.out.printf("Application running on %s\n", baseUri.toURL().toExternalForm());
         } catch (Exception e) {}
