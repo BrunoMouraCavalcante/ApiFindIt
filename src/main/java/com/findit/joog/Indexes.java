@@ -5,8 +5,8 @@ package com.findit.joog;
 
 
 import com.findit.joog.tables.Meetings;
-import com.findit.joog.tables.MeetingsUser;
-import com.findit.joog.tables.User;
+import com.findit.joog.tables.StudentMeeting;
+import com.findit.joog.tables.Students;
 
 import javax.annotation.Generated;
 
@@ -33,10 +33,10 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index MEETINGS_PKEY = Indexes0.MEETINGS_PKEY;
-    public static final Index MEETINGS_USER_PKEY = Indexes0.MEETINGS_USER_PKEY;
-    public static final Index FKI_MEETINGS_ID_FK = Indexes0.FKI_MEETINGS_ID_FK;
-    public static final Index FKI_USER_ID_FK = Indexes0.FKI_USER_ID_FK;
-    public static final Index USER_PKEY = Indexes0.USER_PKEY;
+    public static final Index STUDENT_MEETING_PKEY = Indexes0.STUDENT_MEETING_PKEY;
+    public static final Index FKI_FK_MEETING = Indexes0.FKI_FK_MEETING;
+    public static final Index FKI_FK_STUDENT = Indexes0.FKI_FK_STUDENT;
+    public static final Index STUDENTS_PKEY = Indexes0.STUDENTS_PKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -44,9 +44,9 @@ public class Indexes {
 
     private static class Indexes0 extends AbstractKeys {
         public static Index MEETINGS_PKEY = createIndex("Meetings_pkey", Meetings.MEETINGS, new OrderField[] { Meetings.MEETINGS.MEETING_ID }, true);
-        public static Index MEETINGS_USER_PKEY = createIndex("Meetings_User_pkey", MeetingsUser.MEETINGS_USER, new OrderField[] { MeetingsUser.MEETINGS_USER.ID }, true);
-        public static Index FKI_MEETINGS_ID_FK = createIndex("fki_meetings_id_fk", MeetingsUser.MEETINGS_USER, new OrderField[] { MeetingsUser.MEETINGS_USER.MEETING_ID }, false);
-        public static Index FKI_USER_ID_FK = createIndex("fki_user_id_fk", MeetingsUser.MEETINGS_USER, new OrderField[] { MeetingsUser.MEETINGS_USER.USER_ID }, false);
-        public static Index USER_PKEY = createIndex("User_pkey", User.USER, new OrderField[] { User.USER.USER_ID }, true);
+        public static Index STUDENT_MEETING_PKEY = createIndex("Student_Meeting_pkey", StudentMeeting.STUDENT_MEETING, new OrderField[] { StudentMeeting.STUDENT_MEETING.ID }, true);
+        public static Index FKI_FK_MEETING = createIndex("fki_fk_meeting", StudentMeeting.STUDENT_MEETING, new OrderField[] { StudentMeeting.STUDENT_MEETING.MEETING_ID }, false);
+        public static Index FKI_FK_STUDENT = createIndex("fki_fk_student", StudentMeeting.STUDENT_MEETING, new OrderField[] { StudentMeeting.STUDENT_MEETING.STUDENT_ID }, false);
+        public static Index STUDENTS_PKEY = createIndex("Students_pkey", Students.STUDENTS, new OrderField[] { Students.STUDENTS.STUDENT_ID }, true);
     }
 }

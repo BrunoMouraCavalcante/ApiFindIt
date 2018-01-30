@@ -5,8 +5,8 @@ package com.findit.joog;
 
 
 import com.findit.joog.tables.Meetings;
-import com.findit.joog.tables.MeetingsUser;
-import com.findit.joog.tables.User;
+import com.findit.joog.tables.StudentMeeting;
+import com.findit.joog.tables.Students;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Catalog;
+import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
@@ -32,7 +33,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -218275426;
+    private static final long serialVersionUID = -130720536;
 
     /**
      * The reference instance of <code>public</code>
@@ -45,14 +46,14 @@ public class Public extends SchemaImpl {
     public final Meetings MEETINGS = com.findit.joog.tables.Meetings.MEETINGS;
 
     /**
-     * The table <code>public.Meetings_User</code>.
+     * The table <code>public.Student_Meeting</code>.
      */
-    public final MeetingsUser MEETINGS_USER = com.findit.joog.tables.MeetingsUser.MEETINGS_USER;
+    public final StudentMeeting STUDENT_MEETING = com.findit.joog.tables.StudentMeeting.STUDENT_MEETING;
 
     /**
-     * The table <code>public.User</code>.
+     * The table <code>public.Students</code>.
      */
-    public final User USER = com.findit.joog.tables.User.USER;
+    public final Students STUDENTS = com.findit.joog.tables.Students.STUDENTS;
 
     /**
      * No further instances allowed
@@ -71,6 +72,20 @@ public class Public extends SchemaImpl {
     }
 
     @Override
+    public final List<Sequence<?>> getSequences() {
+        List result = new ArrayList();
+        result.addAll(getSequences0());
+        return result;
+    }
+
+    private final List<Sequence<?>> getSequences0() {
+        return Arrays.<Sequence<?>>asList(
+            Sequences.MEETINGS_MEETING_ID_SEQ,
+            Sequences.STUDENT_MEETING_ID_SEQ,
+            Sequences.STUDENTS_STUDENT_ID_SEQ);
+    }
+
+    @Override
     public final List<Table<?>> getTables() {
         List result = new ArrayList();
         result.addAll(getTables0());
@@ -80,7 +95,7 @@ public class Public extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Meetings.MEETINGS,
-            MeetingsUser.MEETINGS_USER,
-            User.USER);
+            StudentMeeting.STUDENT_MEETING,
+            Students.STUDENTS);
     }
 }

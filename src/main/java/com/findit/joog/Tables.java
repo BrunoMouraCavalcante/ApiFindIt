@@ -5,8 +5,8 @@ package com.findit.joog;
 
 
 import com.findit.joog.tables.Meetings;
-import com.findit.joog.tables.MeetingsUser;
-import com.findit.joog.tables.User;
+import com.findit.joog.tables.StudentMeeting;
+import com.findit.joog.tables.Students;
 
 import javax.annotation.Generated;
 
@@ -30,12 +30,12 @@ public class Tables {
     public static final Meetings MEETINGS = com.findit.joog.tables.Meetings.MEETINGS;
 
     /**
-     * The table <code>public.Meetings_User</code>.
+     * The table <code>public.Student_Meeting</code>.
      */
-    public static final MeetingsUser MEETINGS_USER = com.findit.joog.tables.MeetingsUser.MEETINGS_USER;
+    public static final StudentMeeting STUDENT_MEETING = com.findit.joog.tables.StudentMeeting.STUDENT_MEETING;
 
     /**
-     * The table <code>public.User</code>.
+     * The table <code>public.Students</code>.
      */
-    public static final User USER = com.findit.joog.tables.User.USER;
+    public static final Students STUDENTS = com.findit.joog.tables.Students.STUDENTS;
 }

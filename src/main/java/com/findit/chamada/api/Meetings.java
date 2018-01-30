@@ -2,7 +2,6 @@ package com.findit.chamada.api;
 
 import com.findit.bd.connector.PostgresConnector;
 import com.findit.joog.tables.records.MeetingsRecord;
-import com.findit.joog.tables.records.UserRecord;
 import okhttp3.ResponseBody;
 import org.jooq.DSLContext;
 import org.jooq.Result;

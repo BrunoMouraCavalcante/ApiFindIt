@@ -1,6 +1,7 @@
 package com.findit;
 
 import io.netty.channel.Channel;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.netty.httpserver.NettyHttpContainerProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -21,6 +22,7 @@ public class App {
 
             URI baseUri = UriBuilder.fromUri("http://localhost/").port(port).build();
             ResourceConfig resourceConfig = new ResourceConfig().packages("com.findit.chamada.api");
+            resourceConfig.register(MultiPartFeature.class);
             NettyHttpContainerProvider.createServer(baseUri, resourceConfig, false);
             System.out.printf("Application running on %s\n", baseUri.toURL().toExternalForm());
         } catch (Exception e) {}

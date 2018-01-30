@@ -16,6 +16,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
@@ -39,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Meetings extends TableImpl<MeetingsRecord> {
 
-    private static final long serialVersionUID = -161283516;
+    private static final long serialVersionUID = -1270821315;
 
     /**
      * The reference instance of <code>public.Meetings</code>
@@ -57,7 +58,7 @@ public class Meetings extends TableImpl<MeetingsRecord> {
     /**
      * The column <code>public.Meetings.meeting_id</code>.
      */
-    public final TableField<MeetingsRecord, Integer> MEETING_ID = createField("meeting_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<MeetingsRecord, Integer> MEETING_ID = createField("meeting_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('\"Meetings_meeting_id_seq\"'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.Meetings.type</code>.
@@ -112,6 +113,14 @@ public class Meetings extends TableImpl<MeetingsRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.MEETINGS_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<MeetingsRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_MEETINGS;
     }
 
     /**
