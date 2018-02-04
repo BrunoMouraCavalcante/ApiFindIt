@@ -1,6 +1,7 @@
 package com.findit.chamada.api;
 
 import com.findit.bd.connector.PostgresConnector;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.ResponseBody;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -9,6 +10,7 @@ import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.jooq.tools.json.JSONArray;
 import org.jooq.tools.json.JSONObject;
 import org.jooq.tools.json.JSONParser;
 
@@ -38,8 +40,10 @@ public class Students {
             java.sql.Connection conn = PostgresConnector.getConnection();
             DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
             Result<Record2<String, String>> result = select.select(STUDENTS.FIRST_NAME,STUDENTS.EMAIL).from(STUDENTS).fetch();
-            //return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
-            return Response.ok(result.formatJSON(),MediaType.APPLICATION_JSON).build();
+            return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
+            //Gson gson = new Gson();
+            //String responseGson = gson.toJson(result);
+            //return Response.ok(result.formatJSON(),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             return Response.status(404).build();
         }
@@ -140,7 +144,7 @@ public class Students {
         }
     }
 
-    public JSONObject generateResponse(int id, String data) {
+    public JSONArray generateResponse(int id, String data) {
         if (data != null) {
             try {
                 JSONParser parser = new JSONParser();
@@ -164,10 +168,10 @@ public class Students {
 
         public String getValue() { return this.value; }
 
-        public static JSONObject getValueById(int id, JSONObject data) {
+        public static JSONArray getValueById(int id, JSONObject data) {
             for(ResponseStatus rs : ResponseStatus.values()){
                 if (rs.id == id) {
-                    JSONObject json = new JSONObject();
+                    JSONArray json = new JSONArray();
                     JSONObject jsonS = new JSONObject();
                     JSONObject jsonF = new JSONObject();
                     if (rs.succcess) {
@@ -177,8 +181,10 @@ public class Students {
                         jsonF.put("code",rs.name());
                         jsonF.put("extras",(data != null ? data :rs.getValue()));
                     }
-                    json.put("success",jsonS);
-                    json.put("error", jsonF);
+                    json.add(jsonS);
+                    json.add(jsonF);
+                    //json.put("success",jsonS);
+                    //json.put("error", jsonF);
                     return  json;
                 }
             }
