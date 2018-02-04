@@ -40,6 +40,7 @@ public class Students {
             java.sql.Connection conn = PostgresConnector.getConnection();
             DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
             Result<Record2<String, String>> result = select.select(STUDENTS.FIRST_NAME,STUDENTS.EMAIL).from(STUDENTS).fetch();
+            conn.close();
             return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             return Response.status(404).build();
@@ -79,6 +80,7 @@ public class Students {
                     student.getEmail(),
                     student.getImage()
                 ).execute();
+            conn.close();
             return Response.ok(generateResponse(result, null),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             return Response.status(404).build();
@@ -114,6 +116,7 @@ public class Students {
                     .set(STUDENTS.IMAGE,student.getImage())
                     .where(STUDENTS.STUDENT_ID.eq(student.getStudent_id()))
                     .execute();
+            conn.close();
             return Response.ok(generateResponse(result, null),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             return Response.status(404).build();
@@ -135,6 +138,7 @@ public class Students {
             int result = delete.delete(STUDENTS)
                     .where(STUDENTS.STUDENT_ID.eq(id))
                     .execute();
+            conn.close();
             return Response.ok(generateResponse(result, null),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             return Response.status(404).build();
