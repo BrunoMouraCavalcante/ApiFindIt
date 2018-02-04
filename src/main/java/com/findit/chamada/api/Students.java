@@ -38,7 +38,8 @@ public class Students {
             java.sql.Connection conn = PostgresConnector.getConnection();
             DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
             Result<Record2<String, String>> result = select.select(STUDENTS.FIRST_NAME,STUDENTS.EMAIL).from(STUDENTS).fetch();
-            return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
+            //return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
+            return Response.ok(result.formatJSON(),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             return Response.status(404).build();
         }
