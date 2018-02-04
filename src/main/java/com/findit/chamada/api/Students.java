@@ -144,7 +144,7 @@ public class Students {
         }
     }
 
-    public JSONArray generateResponse(int id, String data) {
+    public JSONObject generateResponse(int id, String data) {
         if (data != null) {
             try {
                 JSONParser parser = new JSONParser();
@@ -168,10 +168,10 @@ public class Students {
 
         public String getValue() { return this.value; }
 
-        public static JSONArray getValueById(int id, JSONObject data) {
+        public static JSONObject getValueById(int id, JSONObject data) {
             for(ResponseStatus rs : ResponseStatus.values()){
                 if (rs.id == id) {
-                    JSONArray json = new JSONArray();
+                    JSONObject json = new JSONObject();
                     JSONObject jsonS = new JSONObject();
                     JSONObject jsonF = new JSONObject();
                     if (rs.succcess) {
@@ -181,10 +181,10 @@ public class Students {
                         jsonF.put("code",rs.name());
                         jsonF.put("extras",(data != null ? data :rs.getValue()));
                     }
-                    json.add(jsonS);
-                    json.add(jsonF);
-                    //json.put("success",jsonS);
-                    //json.put("error", jsonF);
+                    //json.add(jsonS);
+                    //json.add(jsonF);
+                    json.put("success",jsonS);
+                    json.put("error", jsonF);
                     return  json;
                 }
             }
