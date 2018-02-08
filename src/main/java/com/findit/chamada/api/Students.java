@@ -175,12 +175,17 @@ public class Students {
                     JSONObject json = new JSONObject();
                     JSONObject jsonS = new JSONObject();
                     JSONObject jsonF = new JSONObject();
+                    JSONObject jsonD = new JSONObject();
+                    if(data == null) {
+                        jsonD.put("value",rs.getValue());
+                        data = jsonD;
+                    }
                     if (rs.succcess) {
                         jsonS.put("code",rs.name());
-                        jsonS.put("data",(data != null ? data :rs.getValue()));
+                        jsonS.put("data",data);
                     } else {
                         jsonF.put("code",rs.name());
-                        jsonF.put("extras",(data != null ? data :rs.getValue()));
+                        jsonF.put("extras",data);
                     }
                     //json.add(jsonS);
                     //json.add(jsonF);
