@@ -5,10 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.ResponseBody;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.jooq.DSLContext;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SQLDialect;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.json.JSONArray;
 import org.jooq.tools.json.JSONObject;
@@ -39,7 +36,7 @@ public class Students {
         try {
             java.sql.Connection conn = PostgresConnector.getConnection();
             DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
-            Result<Record2<String, String>> result = select.select(STUDENTS.FIRST_NAME,STUDENTS.EMAIL).from(STUDENTS).fetch();
+            Result<Record3<Integer,String, String>> result = select.select(STUDENTS.STUDENT_ID,STUDENTS.FIRST_NAME,STUDENTS.EMAIL).from(STUDENTS).fetch();
             conn.close();
             return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
