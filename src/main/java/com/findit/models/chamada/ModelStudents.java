@@ -1,13 +1,13 @@
 package com.findit.models.chamada;
 
-public class Students {
+public class ModelStudents {
     private int student_id;
     private String first_name;
     private String last_name;
     private String email;
     private byte[] image;
 
-    public Students(int student_id, String first_name, String last_name, String email, byte[] image) {
+    public ModelStudents(int student_id, String first_name, String last_name, String email, byte[] image) {
         this.student_id = student_id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -15,20 +15,18 @@ public class Students {
         this.image = image;
     }
 
-    public Students() {
+    public ModelStudents() {
 
     }
 
-    public Students(String first_name, String last_name, String email, byte[] image) {
+    public ModelStudents(String first_name, String last_name, String email, byte[] image) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
         this.image = image;
     }
 
-    public int getStudent_id() {
-        return student_id;
-    }
+    public int getStudent_id() { return student_id; }
 
     public void setStudent_id(int student_id) {
         this.student_id = student_id;

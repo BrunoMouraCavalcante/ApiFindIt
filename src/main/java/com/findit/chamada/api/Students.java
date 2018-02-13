@@ -1,13 +1,11 @@
 package com.findit.chamada.api;
 
 import com.findit.bd.connector.PostgresConnector;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.findit.models.chamada.ModelStudents;
 import okhttp3.ResponseBody;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jooq.*;
 import org.jooq.impl.DSL;
-import org.jooq.tools.json.JSONArray;
 import org.jooq.tools.json.JSONObject;
 import org.jooq.tools.json.JSONParser;
 
@@ -58,7 +56,7 @@ public class Students {
         try {
             JSONParser parser = new JSONParser();
             JSONObject object = (JSONObject) parser.parse(json);
-            com.findit.models.chamada.Students student = new com.findit.models.chamada.Students(
+            ModelStudents student = new ModelStudents(
                     object.get("first_name").toString(),
                     object.get("last_name").toString(),
                     object.get("email").toString(),
@@ -98,7 +96,7 @@ public class Students {
         try {
             JSONParser parser = new JSONParser();
             JSONObject object = (JSONObject) parser.parse(json);
-            com.findit.models.chamada.Students student = new com.findit.models.chamada.Students(
+            ModelStudents student = new ModelStudents(
                     Integer.parseInt(object.get("student_id").toString()),
                     object.get("first_name").toString(),
                     object.get("last_name").toString(),

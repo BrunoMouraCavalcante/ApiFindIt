@@ -1,19 +1,34 @@
 package com.findit.chamada.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findit.bd.connector.PostgresConnector;
 import com.findit.joog.tables.records.MeetingsRecord;
+import com.findit.joog.tables.records.StudentMeetingRecord;
+import com.findit.models.chamada.ModelMeetings;
+import com.findit.models.chamada.ModelStudentMeeting;
 import okhttp3.ResponseBody;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jooq.DSLContext;
+import org.jooq.InsertValuesStep3;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.jooq.tools.json.JSONObject;
+import org.jooq.tools.json.JSONParser;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 import static com.findit.joog.Tables.MEETINGS;
+import static com.findit.joog.Tables.STUDENT_MEETING;
 
 @Path("/api/chamada/Meetings")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -32,10 +47,86 @@ public class Meetings {
             java.sql.Connection conn = PostgresConnector.getConnection();
             DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
             Result<MeetingsRecord> result = select.selectFrom(MEETINGS).fetch();
-            String responseGson = "ok!";
-            return Response.ok(result.formatJSON(),MediaType.APPLICATION_JSON).build();
+            conn.close();
+            return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             return Response.status(404).build();
+        }
+    }
+
+    @javax.ws.rs.POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response saveMeeting(@FormDataParam("meeting") String meeting) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ModelMeetings meet = mapper.readValue(meeting, ModelMeetings.class);
+            java.sql.Connection conn = PostgresConnector.getConnection();
+            DSLContext insert = DSL.using(conn, SQLDialect.POSTGRES);
+            Result<MeetingsRecord> result = insert.insertInto(MEETINGS)
+                    .columns(MEETINGS.TYPE, MEETINGS.DATE)
+                    .values(meet.getType(), meet.getDate())
+                    .returning(MEETINGS.MEETING_ID)
+                    .fetch();
+            conn.close();
+            return Response.ok(generateResponse(1, result.formatJSON()),MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            return Response.status(404).build();
+        }
+    }
+
+    public JSONObject generateResponse(int id, String data) {
+        if (data != null) {
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(data);
+                return ResponseStatus.getValueById(id,json);
+            } catch (Exception e) {
+                return ResponseStatus.getValueById(id,null);
+            }
+        }
+        return ResponseStatus.getValueById(id,null);
+    }
+
+    public enum ResponseStatus {
+        STU_001(1,"Sucess", true),
+        STU_000(0,"Fail", false);
+
+        private String value;
+        private int id;
+        private boolean succcess;
+
+        public String getValue() { return this.value; }
+
+        public static JSONObject getValueById(int id, JSONObject data) {
+            for(ResponseStatus rs : ResponseStatus.values()){
+                if (rs.id == id) {
+                    JSONObject json = new JSONObject();
+                    JSONObject jsonS = new JSONObject();
+                    JSONObject jsonF = new JSONObject();
+                    JSONObject jsonD = new JSONObject();
+                    if(data == null) {
+                        jsonD.put("value",rs.getValue());
+                        data = jsonD;
+                    }
+                    if (rs.succcess) {
+                        jsonS.put("code",rs.name());
+                        jsonS.put("data",data);
+                    } else {
+                        jsonF.put("code",rs.name());
+                        jsonF.put("extras",data);
+                    }
+                    json.put("success",jsonS);
+                    json.put("error", jsonF);
+                    return  json;
+                }
+            }
+            return null;
+        }
+
+        ResponseStatus(int result, String value, boolean success) {
+            this.id = result;
+            this.value = value;
+            this.succcess = success;
         }
     }
 }
