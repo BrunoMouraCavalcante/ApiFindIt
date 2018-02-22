@@ -2,7 +2,9 @@ package com.findit.chamada.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findit.bd.connector.PostgresConnector;
+import com.findit.joog.tables.records.MeetingsRecord;
 import com.findit.joog.tables.records.StudentMeetingRecord;
+import com.findit.models.chamada.ModelMeetings;
 import com.findit.models.chamada.ModelStudentMeeting;
 import okhttp3.ResponseBody;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -23,6 +25,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.findit.joog.Tables.MEETINGS;
 import static com.findit.joog.Tables.STUDENT_MEETING;
 
 @Path("/api/chamada/StudentMeeting")
@@ -113,6 +116,41 @@ public class StudentMeeting {
                 result = result.values(student.getStudent_id(),student.getMeeting_id(),student.getStatus());
             }
             int output = result.execute();
+            conn.close();
+            return Response.ok(generateResponse(1, null),MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            return Response.status(404).build();
+        }
+    }
+
+    @javax.ws.rs.POST
+    @Path("/save")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response saveMeetingAndStudents(@FormDataParam("meeting") String meeting,
+                                           @FormDataParam("students")String students) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ModelMeetings meet = mapper.readValue(meeting, ModelMeetings.class);
+            List<ModelStudentMeeting> list = mapper.readValue(students, mapper.getTypeFactory().constructCollectionType(List.class, ModelStudentMeeting.class));
+            java.sql.Connection conn = PostgresConnector.getConnection();
+            DSLContext insert = DSL.using(conn, SQLDialect.POSTGRES);
+
+            Result<MeetingsRecord> result = insert.insertInto(MEETINGS)
+                    .columns(MEETINGS.TYPE, MEETINGS.DATE)
+                    .values(meet.getType(), meet.getDate())
+                    .returning(MEETINGS.MEETING_ID)
+                    .fetch();
+            InsertValuesStep3<StudentMeetingRecord, Integer, Integer, Integer> resultS = insert.insertInto(
+                    STUDENT_MEETING)
+                    .columns(STUDENT_MEETING.STUDENT_ID,
+                            STUDENT_MEETING.MEETING_ID,
+                            STUDENT_MEETING.STATUS);
+
+
+            for (ModelStudentMeeting student : list) {
+                resultS = resultS.values(student.getStudent_id(),result.get(0).getMeetingId(),student.getStatus());
+            }
+            int output = resultS.execute();
             conn.close();
             return Response.ok(generateResponse(1, null),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
