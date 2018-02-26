@@ -17,6 +17,7 @@ import org.jooq.tools.json.JSONObject;
 import org.jooq.tools.json.JSONParser;
 
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -69,6 +70,27 @@ public class Meetings {
                     .fetch();
             conn.close();
             return Response.ok(generateResponse(1, result.formatJSON()),MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            return Response.status(404).build();
+        }
+    }
+
+    /**
+     * GET /api/chamada/Meetings/type/{id} Get meetings by type
+     *
+     * @return the {@code Resource} with status 200 (OK) and body or status 404
+     */
+    @javax.ws.rs.GET
+    @Path("/type/{id: [1-2]}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMeetingsByType(@PathParam("id") Integer type) {
+        ResponseBody response = null;
+        try {
+            java.sql.Connection conn = PostgresConnector.getConnection();
+            DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
+            Result<MeetingsRecord> result = select.selectFrom(MEETINGS).where(MEETINGS.TYPE.eq(type)).fetch();
+            conn.close();
+            return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             return Response.status(404).build();
         }
