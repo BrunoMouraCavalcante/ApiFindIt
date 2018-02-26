@@ -94,9 +94,9 @@ public class Meetings {
                     .select(MEETINGS.MEETING_ID,
                             MEETINGS.TYPE,
                             MEETINGS.DATE,
-                            sum(when(STUDENT_MEETING.STATUS.eq(1),1).otherwise(0)),
-                            sum(when(STUDENT_MEETING.STATUS.eq(2),1).otherwise(0)),
-                            sum(when(STUDENT_MEETING.STATUS.eq(3),1).otherwise(0))
+                            sum(when(STUDENT_MEETING.STATUS.eq(1),1).otherwise(0)).as("presence"),
+                            sum(when(STUDENT_MEETING.STATUS.eq(2),1).otherwise(0)).as("late"),
+                            sum(when(STUDENT_MEETING.STATUS.eq(3),1).otherwise(0)).as("miss")
                     ).from(MEETINGS).join(STUDENT_MEETING).on(MEETINGS.MEETING_ID.eq(STUDENT_MEETING.MEETING_ID))
                     .where(MEETINGS.TYPE.eq(type))
                     .groupBy(MEETINGS.MEETING_ID)
