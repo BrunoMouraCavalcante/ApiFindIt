@@ -8,10 +8,7 @@ import com.findit.models.chamada.ModelMeetings;
 import com.findit.models.chamada.ModelStudentMeeting;
 import okhttp3.ResponseBody;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep3;
-import org.jooq.Result;
-import org.jooq.SQLDialect;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.json.JSONObject;
 import org.jooq.tools.json.JSONParser;
@@ -22,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +28,9 @@ import java.util.Date;
 
 import static com.findit.joog.Tables.MEETINGS;
 import static com.findit.joog.Tables.STUDENT_MEETING;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
+import static org.jooq.impl.DSL.when;
 
 @Path("/api/chamada/Meetings")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -88,7 +89,18 @@ public class Meetings {
         try {
             java.sql.Connection conn = PostgresConnector.getConnection();
             DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
-            Result<MeetingsRecord> result = select.selectFrom(MEETINGS).where(MEETINGS.TYPE.eq(type)).fetch();
+
+            Result<Record6<Integer, Integer, Timestamp, BigDecimal, BigDecimal, BigDecimal>> result = select
+                    .select(MEETINGS.MEETING_ID,
+                            MEETINGS.TYPE,
+                            MEETINGS.DATE,
+                            sum(when(STUDENT_MEETING.STATUS.eq(1),1).otherwise(0)),
+                            sum(when(STUDENT_MEETING.STATUS.eq(2),1).otherwise(0)),
+                            sum(when(STUDENT_MEETING.STATUS.eq(3),1).otherwise(0))
+                    ).from(MEETINGS).join(STUDENT_MEETING).on(MEETINGS.MEETING_ID.eq(STUDENT_MEETING.MEETING_ID))
+                    .where(MEETINGS.TYPE.eq(type))
+                    .groupBy(MEETINGS.MEETING_ID)
+                    .fetch();
             conn.close();
             return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
