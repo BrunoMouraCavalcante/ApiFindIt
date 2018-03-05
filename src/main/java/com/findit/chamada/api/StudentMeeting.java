@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.findit.joog.Tables.MEETINGS;
+import static com.findit.joog.Tables.STUDENTS;
 import static com.findit.joog.Tables.STUDENT_MEETING;
 
 @Path("/api/chamada/StudentMeeting")
@@ -151,6 +152,29 @@ public class StudentMeeting {
                 resultS = resultS.values(student.getStudent_id(),result.get(0).getMeetingId(),student.getStatus());
             }
             int output = resultS.execute();
+            conn.close();
+            return Response.ok(generateResponse(1, null),MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            return Response.status(404).build();
+        }
+    }
+
+    @javax.ws.rs.POST
+    @Path("/update")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateStudentMeetings(@FormDataParam("students")String students) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            List<ModelStudentMeeting> list = mapper.readValue(students, mapper.getTypeFactory().constructCollectionType(List.class, ModelStudentMeeting.class));
+            java.sql.Connection conn = PostgresConnector.getConnection();
+            DSLContext update = DSL.using(conn, SQLDialect.POSTGRES);
+
+            for (ModelStudentMeeting student : list) {
+                 update.update(STUDENT_MEETING)
+                        .set(STUDENT_MEETING.STATUS,student.getStatus())
+                        .where(STUDENT_MEETING.ID.eq(student.getId()))
+                        .execute();
+            }
             conn.close();
             return Response.ok(generateResponse(1, null),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
