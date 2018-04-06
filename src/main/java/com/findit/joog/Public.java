@@ -4,6 +4,7 @@
 package com.findit.joog;
 
 
+import com.findit.joog.tables.Email;
 import com.findit.joog.tables.Meetings;
 import com.findit.joog.tables.StudentMeeting;
 import com.findit.joog.tables.Students;
@@ -33,7 +34,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -130720536;
+    private static final long serialVersionUID = 682413014;
 
     /**
      * The reference instance of <code>public</code>
@@ -54,6 +55,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.Students</code>.
      */
     public final Students STUDENTS = com.findit.joog.tables.Students.STUDENTS;
+
+    /**
+     * The table <code>public.email</code>.
+     */
+    public final Email EMAIL = com.findit.joog.tables.Email.EMAIL;
 
     /**
      * No further instances allowed
@@ -80,6 +86,7 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.EMAIL_ID_SEQ,
             Sequences.MEETINGS_MEETING_ID_SEQ,
             Sequences.STUDENT_MEETING_ID_SEQ,
             Sequences.STUDENTS_STUDENT_ID_SEQ);
@@ -96,6 +103,7 @@ public class Public extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Meetings.MEETINGS,
             StudentMeeting.STUDENT_MEETING,
-            Students.STUDENTS);
+            Students.STUDENTS,
+            Email.EMAIL);
     }
 }

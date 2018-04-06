@@ -4,9 +4,11 @@
 package com.findit.joog;
 
 
+import com.findit.joog.tables.Email;
 import com.findit.joog.tables.Meetings;
 import com.findit.joog.tables.StudentMeeting;
 import com.findit.joog.tables.Students;
+import com.findit.joog.tables.records.EmailRecord;
 import com.findit.joog.tables.records.MeetingsRecord;
 import com.findit.joog.tables.records.StudentMeetingRecord;
 import com.findit.joog.tables.records.StudentsRecord;
@@ -40,6 +42,7 @@ public class Keys {
     public static final Identity<MeetingsRecord, Integer> IDENTITY_MEETINGS = Identities0.IDENTITY_MEETINGS;
     public static final Identity<StudentMeetingRecord, Integer> IDENTITY_STUDENT_MEETING = Identities0.IDENTITY_STUDENT_MEETING;
     public static final Identity<StudentsRecord, Integer> IDENTITY_STUDENTS = Identities0.IDENTITY_STUDENTS;
+    public static final Identity<EmailRecord, Integer> IDENTITY_EMAIL = Identities0.IDENTITY_EMAIL;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -48,6 +51,7 @@ public class Keys {
     public static final UniqueKey<MeetingsRecord> MEETINGS_PKEY = UniqueKeys0.MEETINGS_PKEY;
     public static final UniqueKey<StudentMeetingRecord> STUDENT_MEETING_PKEY = UniqueKeys0.STUDENT_MEETING_PKEY;
     public static final UniqueKey<StudentsRecord> STUDENTS_PKEY = UniqueKeys0.STUDENTS_PKEY;
+    public static final UniqueKey<EmailRecord> EMAIL_PKEY = UniqueKeys0.EMAIL_PKEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -64,12 +68,14 @@ public class Keys {
         public static Identity<MeetingsRecord, Integer> IDENTITY_MEETINGS = createIdentity(Meetings.MEETINGS, Meetings.MEETINGS.MEETING_ID);
         public static Identity<StudentMeetingRecord, Integer> IDENTITY_STUDENT_MEETING = createIdentity(StudentMeeting.STUDENT_MEETING, StudentMeeting.STUDENT_MEETING.ID);
         public static Identity<StudentsRecord, Integer> IDENTITY_STUDENTS = createIdentity(Students.STUDENTS, Students.STUDENTS.STUDENT_ID);
+        public static Identity<EmailRecord, Integer> IDENTITY_EMAIL = createIdentity(Email.EMAIL, Email.EMAIL.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<MeetingsRecord> MEETINGS_PKEY = createUniqueKey(Meetings.MEETINGS, "Meetings_pkey", Meetings.MEETINGS.MEETING_ID);
         public static final UniqueKey<StudentMeetingRecord> STUDENT_MEETING_PKEY = createUniqueKey(StudentMeeting.STUDENT_MEETING, "Student_Meeting_pkey", StudentMeeting.STUDENT_MEETING.ID);
         public static final UniqueKey<StudentsRecord> STUDENTS_PKEY = createUniqueKey(Students.STUDENTS, "Students_pkey", Students.STUDENTS.STUDENT_ID);
+        public static final UniqueKey<EmailRecord> EMAIL_PKEY = createUniqueKey(Email.EMAIL, "email_pkey", Email.EMAIL.ID);
     }
 
     private static class ForeignKeys0 extends AbstractKeys {

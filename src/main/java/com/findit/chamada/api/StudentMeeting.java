@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findit.bd.connector.PostgresConnector;
 import com.findit.joog.tables.records.MeetingsRecord;
 import com.findit.joog.tables.records.StudentMeetingRecord;
+import com.findit.joog.tables.records.StudentsRecord;
 import com.findit.models.chamada.ModelMeetings;
 import com.findit.models.chamada.ModelStudentMeeting;
 import okhttp3.ResponseBody;
@@ -19,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static com.findit.joog.Tables.MEETINGS;
@@ -119,6 +121,9 @@ public class StudentMeeting {
                             STUDENT_MEETING.STATUS);
 
             for (ModelStudentMeeting student : list) {
+                if (student.getStatus() != 1) {
+                    prepareEmail(student.getStudent_id(), student.getMeeting_id(), student.getStatus());
+                }
                 result = result.values(student.getStudent_id(),student.getMeeting_id(),student.getStatus());
             }
             int output = result.execute();
@@ -127,6 +132,33 @@ public class StudentMeeting {
         } catch (Exception e) {
             return Response.status(404).build();
         }
+    }
+
+    public void prepareEmail(Integer student_id, Integer meeting_id, int status) {
+        try {
+            java.sql.Connection conn = PostgresConnector.getConnection();
+            DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
+            Result<StudentsRecord> student = select.selectFrom(STUDENTS)
+                    .where(STUDENTS.STUDENT_ID
+                            .eq(student_id)).fetch();
+
+            Result<MeetingsRecord> meeting = select.selectFrom(MEETINGS)
+                    .where(MEETINGS.MEETING_ID
+                            .eq(meeting_id)).fetch();
+            conn.close();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String date  = dateFormat.format(meeting.get(0).getDate());
+            String statusValue = status == 2 ? "o atraso" : "a falta";
+            String email = student.get(0).getEmail();
+            String name = student.get(0).getFirstName()+" "+student.get(0).getLastName();
+            String kind = meeting.get(0).getType() == 1 ? "reunião" : "sede";
+
+            String message = "Prezado "+name+" gostariamos de alertar sobre "+statusValue+" ocorrida na "
+                    +kind+" no dia "+date;
+            SendEmail.Send(email,"", "Aviso sobre "+statusValue,message);
+
+        } catch (Exception e) { }
     }
 
     @javax.ws.rs.POST

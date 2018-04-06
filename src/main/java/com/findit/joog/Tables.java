@@ -4,6 +4,7 @@
 package com.findit.joog;
 
 
+import com.findit.joog.tables.Email;
 import com.findit.joog.tables.Meetings;
 import com.findit.joog.tables.StudentMeeting;
 import com.findit.joog.tables.Students;
@@ -38,4 +39,9 @@ public class Tables {
      * The table <code>public.Students</code>.
      */
     public static final Students STUDENTS = com.findit.joog.tables.Students.STUDENTS;
+
+    /**
+     * The table <code>public.email</code>.
+     */
+    public static final Email EMAIL = com.findit.joog.tables.Email.EMAIL;
 }

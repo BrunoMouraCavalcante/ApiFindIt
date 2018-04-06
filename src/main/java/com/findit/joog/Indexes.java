@@ -4,6 +4,7 @@
 package com.findit.joog;
 
 
+import com.findit.joog.tables.Email;
 import com.findit.joog.tables.Meetings;
 import com.findit.joog.tables.StudentMeeting;
 import com.findit.joog.tables.Students;
@@ -37,6 +38,7 @@ public class Indexes {
     public static final Index FKI_FK_MEETING = Indexes0.FKI_FK_MEETING;
     public static final Index FKI_FK_STUDENT = Indexes0.FKI_FK_STUDENT;
     public static final Index STUDENTS_PKEY = Indexes0.STUDENTS_PKEY;
+    public static final Index EMAIL_PKEY = Indexes0.EMAIL_PKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -48,5 +50,6 @@ public class Indexes {
         public static Index FKI_FK_MEETING = createIndex("fki_fk_meeting", StudentMeeting.STUDENT_MEETING, new OrderField[] { StudentMeeting.STUDENT_MEETING.MEETING_ID }, false);
         public static Index FKI_FK_STUDENT = createIndex("fki_fk_student", StudentMeeting.STUDENT_MEETING, new OrderField[] { StudentMeeting.STUDENT_MEETING.STUDENT_ID }, false);
         public static Index STUDENTS_PKEY = createIndex("Students_pkey", Students.STUDENTS, new OrderField[] { Students.STUDENTS.STUDENT_ID }, true);
+        public static Index EMAIL_PKEY = createIndex("email_pkey", Email.EMAIL, new OrderField[] { Email.EMAIL.ID }, true);
     }
 }
