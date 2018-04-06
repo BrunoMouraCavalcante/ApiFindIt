@@ -146,7 +146,6 @@ public class StudentMeeting {
                     .where(MEETINGS.MEETING_ID
                             .eq(meeting_id)).fetch();
             conn.close();
-
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
             String date  = dateFormat.format(meeting.get(0).getDate());
             String statusValue = status == 2 ? "o atraso" : "a falta";
@@ -156,7 +155,8 @@ public class StudentMeeting {
 
             String message = "Prezado "+name+" gostariamos de alertar sobre "+statusValue+" ocorrida na "
                     +kind+" no dia "+date;
-            SendEmail.Send(email,"", "Aviso sobre "+statusValue,message);
+            System.err.println("im here - prepare email to :: "+email);
+            SendEmail.Send__(email,"", "Aviso sobre "+statusValue,message);
 
         } catch (Exception e) { }
     }
@@ -186,6 +186,9 @@ public class StudentMeeting {
 
 
             for (ModelStudentMeeting student : list) {
+                if (student.getStatus() != 1) {
+                    prepareEmail(student.getStudent_id(), result.get(0).getMeetingId(), student.getStatus());
+                }
                 resultS = resultS.values(student.getStudent_id(),result.get(0).getMeetingId(),student.getStatus());
             }
             int output = resultS.execute();

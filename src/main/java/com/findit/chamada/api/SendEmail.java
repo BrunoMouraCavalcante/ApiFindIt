@@ -2,40 +2,31 @@ package com.findit.chamada.api;
 
 import com.sun.mail.smtp.SMTPTransport;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import com.sendgrid.*;
+import org.jooq.util.derby.sys.Sys;
+
+import java.io.IOException;
+import javax.mail.*;
+import javax.mail.internet.*;
 import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 
 public class SendEmail {
 
-    /**
-     * Send email using GMail SMTP server.
-     *
-     * @param recipientEmail TO recipient
-     * @param ccEmail CC recipient. Can be empty if there is no CC recipient
-     * @param title title of the message
-     * @param message message to be sent
-     * @throws AddressException if the email address parse failed
-     * @throws MessagingException if the connection is dead or not in the connected state or if the message is not a MimeMessage
-     */
-    public static void Send(String recipientEmail, String ccEmail, String title, String message) throws AddressException, MessagingException {
+    public static void Send__(String recipientEmail, String ccEmail, String title, String message) throws AddressException, MessagingException {
+        System.err.println("Send__");
         Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-        final String username = "bmc.brunomc";
-        final String password = "los23caribenos";
+        final String username = System.getenv("SENDGRID_USERNAME");
+        final String password = System.getenv("SENDGRID_PASSWORD");
         // Get a Properties object
         Properties props = System.getProperties();
         props.setProperty("mail.smtps.host", "smtp.gmail.com");
         props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
         props.setProperty("mail.smtp.socketFactory.fallback", "false");
-        props.setProperty("mail.smtp.port", "465");
-        props.setProperty("mail.smtp.socketFactory.port", "465");
+        props.setProperty("mail.smtp.port", "587");
+        props.setProperty("mail.smtp.socketFactory.port", "587");
         props.setProperty("mail.smtps.auth", "true");
 
     /*
@@ -54,7 +45,7 @@ public class SendEmail {
         final MimeMessage msg = new MimeMessage(session);
 
         // -- Set the FROM and TO fields --
-        msg.setFrom(new InternetAddress(username + "@gmail.com"));
+        msg.setFrom(new InternetAddress(username));
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail, false));
 
         if (ccEmail.length() > 0) {
@@ -71,4 +62,72 @@ public class SendEmail {
         t.sendMessage(msg, msg.getAllRecipients());
         t.close();
     }
+//
+//    private static final String SMTP_HOST_NAME = "smtp.sendgrid.net";
+//    private static final String SMTP_AUTH_USER = System.getenv("SENDGRID_USERNAME");
+//    private static final String SMTP_AUTH_PWD  = System.getenv("SENDGRID_PASSWORD");
+//
+//
+//
+//    public static void send(String fromEmail, String toEmail, String subject, String htmlContent) throws Exception{
+//
+//        fromEmail = SMTP_AUTH_USER;
+//        Properties props = new Properties();
+//        props.put("mail.transport.protocol", "smtp");
+//        props.put("mail.smtp.host", SMTP_HOST_NAME);
+//        props.put("mail.smtp.port", 587);
+//        props.put("mail.smtp.auth", "true");
+//        Authenticator auth = new SMTPAuthenticator();
+//        Session mailSession = Session.getDefaultInstance(props, auth);
+//
+//        // uncomment for debugging infos to stdout
+//
+//        // mailSession.setDebug(true);
+//
+//        Transport transport = mailSession.getTransport();
+//        MimeMessage message = new MimeMessage(mailSession);
+//        Multipart multipart = new MimeMultipart("alternative");
+//
+//        BodyPart bodyPart = new MimeBodyPart();
+//        bodyPart.setContent(htmlContent, "text/html");
+//        multipart.addBodyPart(bodyPart);
+//        message.setContent(multipart);
+//        message.setFrom(new InternetAddress(fromEmail));
+//
+//        message.setSubject(subject);
+//        message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+//        transport.connect();
+//        transport.sendMessage(message,
+//        message.getRecipients(Message.RecipientType.TO));
+//        transport.close();
+//    }
+//
+//    private static class SMTPAuthenticator extends javax.mail.Authenticator {
+//        public PasswordAuthentication getPasswordAuthentication() {
+//            String username = SMTP_AUTH_USER;
+//            String password = SMTP_AUTH_PWD;
+//            return new PasswordAuthentication(username, password);
+//        }
+//    }
+        public static void send(String fromEmail, String toEmail, String subject, String htmlContent) throws IOException {
+            Email from = new Email(System.getenv("SENDGRID_USERNAME"));
+            Email to = new Email(toEmail);
+            Content content = new Content("text/plain", htmlContent);
+            Mail mail = new Mail(from, subject, to, content);
+
+            SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+            Request request = new Request();
+            try {
+                request.setMethod(Method.POST);
+                request.setEndpoint("mail/send");
+                request.setBody(mail.build());
+                Response response = sg.api(request);
+                System.out.println(response.getStatusCode());
+                System.out.println(response.getBody());
+                System.out.println(response.getHeaders());
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+                throw ex;
+            }
+        }
 }
