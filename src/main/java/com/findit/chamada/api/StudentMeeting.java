@@ -156,7 +156,7 @@ public class StudentMeeting {
             String message = "Prezado "+name+" gostariamos de alertar sobre "+statusValue+" ocorrida na "
                     +kind+" no dia "+date;
             System.err.println("im here - prepare email to :: "+email);
-            SendEmail.Send__(email,"", "Aviso sobre "+statusValue,message);
+            SendEmail.send("",email, "Aviso sobre "+statusValue,message);
 
         } catch (Exception e) { }
     }
