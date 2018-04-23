@@ -2,9 +2,9 @@ package com.findit.chamada.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findit.bd.connector.PostgresConnector;
-import com.findit.joog.tables.records.MeetingsRecord;
-import com.findit.joog.tables.records.StudentMeetingRecord;
-import com.findit.joog.tables.records.StudentsRecord;
+import com.findit.jooq.tables.records.MeetingsRecord;
+import com.findit.jooq.tables.records.StudentMeetingRecord;
+import com.findit.jooq.tables.records.StudentsRecord;
 import com.findit.models.chamada.ModelMeetings;
 import com.findit.models.chamada.ModelStudentMeeting;
 import okhttp3.ResponseBody;
@@ -23,9 +23,9 @@ import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static com.findit.joog.Tables.MEETINGS;
-import static com.findit.joog.Tables.STUDENTS;
-import static com.findit.joog.Tables.STUDENT_MEETING;
+import static com.findit.jooq.Tables.MEETINGS;
+import static com.findit.jooq.Tables.STUDENT_MEETING;
+import static com.findit.jooq.tables.Students.STUDENTS;
 
 @Path("/api/chamada/StudentMeeting")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })

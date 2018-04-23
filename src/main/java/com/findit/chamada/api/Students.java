@@ -16,8 +16,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static com.findit.jooq.tables.Students.STUDENTS;
 
-import static com.findit.joog.Tables.STUDENTS;
 
 @Path("/api/chamada/Students")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })

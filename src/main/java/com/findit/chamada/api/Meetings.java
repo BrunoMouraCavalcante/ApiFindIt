@@ -2,10 +2,8 @@ package com.findit.chamada.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findit.bd.connector.PostgresConnector;
-import com.findit.joog.tables.records.MeetingsRecord;
-import com.findit.joog.tables.records.StudentMeetingRecord;
+import com.findit.jooq.tables.records.MeetingsRecord;
 import com.findit.models.chamada.ModelMeetings;
-import com.findit.models.chamada.ModelStudentMeeting;
 import okhttp3.ResponseBody;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jooq.*;
@@ -21,14 +19,9 @@ import javax.ws.rs.core.Response;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
-import static com.findit.joog.Tables.MEETINGS;
-import static com.findit.joog.Tables.STUDENT_MEETING;
-import static org.jooq.impl.DSL.count;
+import static com.findit.jooq.Tables.MEETINGS;
+import static com.findit.jooq.Tables.STUDENT_MEETING;
 import static org.jooq.impl.DSL.sum;
 import static org.jooq.impl.DSL.when;
 
