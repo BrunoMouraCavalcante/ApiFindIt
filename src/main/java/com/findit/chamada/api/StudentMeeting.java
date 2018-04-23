@@ -161,6 +161,37 @@ public class StudentMeeting {
         } catch (Exception e) { }
     }
 
+    public void updateStudent(int studentId, int status) {
+        try {
+            java.sql.Connection conn = PostgresConnector.getConnection();
+            DSLContext update = DSL.using(conn, SQLDialect.POSTGRES);
+            Result<StudentsRecord> student =  update.selectFrom(STUDENTS)
+                  .where(STUDENTS.STUDENT_ID.eq(studentId))
+                  .fetch();
+
+            UpdateSetFirstStep<StudentsRecord> result = update.update(STUDENTS);
+            if (status == 2) {
+                if (student.get(0).getLate() >= 3) {
+                    result.set(STUDENTS.MISSING,STUDENTS.MISSING.add(1))
+                        .set(STUDENTS.LATE, STUDENTS.LATE.sub(3))
+                        .where(STUDENTS.STUDENT_ID.eq(studentId))
+                        .execute();
+                } else {
+                    result.set(STUDENTS.LATE, STUDENTS.LATE.add(1))
+                        .where(STUDENTS.STUDENT_ID.eq(studentId))
+                        .execute();
+                }
+            } else if (status == 3) {
+                result.set(STUDENTS.MISSING,STUDENTS.MISSING.add(1))
+                    .where(STUDENTS.STUDENT_ID.eq(studentId))
+                    .execute();
+            }
+            conn.close();
+        } catch (Exception e) {
+            System.err.println("Fail on update student late-miss ::  "+e.getMessage());
+        }
+    }
+
     @javax.ws.rs.POST
     @Path("/save")
     @Produces(MediaType.APPLICATION_JSON)
@@ -188,6 +219,7 @@ public class StudentMeeting {
             for (ModelStudentMeeting student : list) {
                 if (student.getStatus() != 1) {
                     prepareEmail(student.getStudent_id(), result.get(0).getMeetingId(), student.getStatus());
+                    updateStudent(student.getStudent_id(), student.getStatus());
                 }
                 resultS = resultS.values(student.getStudent_id(),result.get(0).getMeetingId(),student.getStatus());
             }
