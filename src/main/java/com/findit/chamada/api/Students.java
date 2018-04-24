@@ -1,6 +1,8 @@
 package com.findit.chamada.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findit.bd.connector.PostgresConnector;
+import com.findit.models.chamada.ModelMeetings;
 import com.findit.models.chamada.ModelStudents;
 import okhttp3.ResponseBody;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -111,6 +113,30 @@ public class Students {
                     .set(STUDENTS.EMAIL,student.getEmail())
                     .set(STUDENTS.IMAGE,student.getImage())
                     .where(STUDENTS.STUDENT_ID.eq(student.getStudent_id()))
+                    .execute();
+            conn.close();
+            return Response.ok(generateResponse(result, null),MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            return Response.status(404).build();
+        }
+    }
+
+    /**
+     * PUT /api/chamada/Students/update/id/removeFault update student to remove his faults
+     *
+     * @return the {@code Resource} with status 200 (OK) and body or status 404
+     */
+    @javax.ws.rs.PUT
+    @Path("update/{id: [0-9]+}/removeFault")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateStudentRemoveFaults(@PathParam("id") Integer student_id) {
+        ResponseBody response = null;
+        try {
+            java.sql.Connection conn = PostgresConnector.getConnection();
+            DSLContext update = DSL.using(conn, SQLDialect.POSTGRES);
+            int result = update.update(STUDENTS)
+                    .set(STUDENTS.MISSING,STUDENTS.MISSING.sub(4))
+                    .where(STUDENTS.STUDENT_ID.eq(student_id))
                     .execute();
             conn.close();
             return Response.ok(generateResponse(result, null),MediaType.APPLICATION_JSON).build();
