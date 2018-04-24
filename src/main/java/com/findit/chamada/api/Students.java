@@ -26,7 +26,7 @@ import static com.findit.jooq.tables.Students.STUDENTS;
 public class Students {
 
     /**
-     * GET /api/chamada/Users/ Get all users
+     * GET /api/chamada/Students/ Get all students
      *
      * @return the {@code Resource} with status 200 (OK) and body or status 404
      */
@@ -37,7 +37,9 @@ public class Students {
         try {
             java.sql.Connection conn = PostgresConnector.getConnection();
             DSLContext select = DSL.using(conn, SQLDialect.POSTGRES);
-            Result<Record3<Integer,String, String>> result = select.select(STUDENTS.STUDENT_ID,STUDENTS.FIRST_NAME,STUDENTS.EMAIL).from(STUDENTS).fetch();
+            Result<Record5<Integer, String, String, Integer, Integer>> result = select
+                    .select(STUDENTS.STUDENT_ID,STUDENTS.FIRST_NAME,STUDENTS.EMAIL,STUDENTS.MISSING, STUDENTS.LATE)
+                    .from(STUDENTS).fetch();
             conn.close();
             return Response.ok(generateResponse(1,result.formatJSON()),MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
